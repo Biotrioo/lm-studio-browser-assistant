@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>LM Studio Assistant</title>
+  <style>
+    body{font-family:Arial,sans-serif;margin:0;padding:10px;background:#1e1e2f;color:#fff;width:100%;height:100%;overflow-y:auto}
+    textarea{width:100%;height:80px;background:#2c2c3a;color:#fff;border:1px solid #444;padding:8px}
+    select,button{width:100%;margin-top:10px;background:#2c2c3a;color:#fff;border:1px solid #444;padding:6px;font-size:14px}
+    #output{background:#111;margin-top:10px;padding:10px;white-space:pre-wrap;max-height:400px;overflow-y:auto;border:1px solid #444}
+  </style>
+</head>
+<body>
+  <textarea id="input" placeholder="Type or paste text here..."></textarea>
+  <select id="model">
+    <option value="default">Default Model</option>
+    <option value="gann">Gann Decoder</option>
+    <option value="friendly">Casual Assistant</option>
+  </select>
+  <button id="send">Ask LM Studio</button>
+  <button id="regenerate">🔁 Regenerate</button>
+  <button id="summarize">🧠 Summarize This Page</button>
+  <button id="newChat">🆕 New Chat</button>
+  <button id="copy">📋 Copy</button>
+  <button id="save">💾 Save (.md)</button>
+  <div id="output">Response will appear here...</div>
+  <script src="marked.min.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "manifest_version": 2,
+  "name": "LM Studio Assistant (Window Fixed)",
+  "version": "4.2",
+  "description": "CSP-safe windowed assistant with full LM Studio integration.",
+  "permissions": [
+    "contextMenus",
+    "tabs",
+    "activeTab",
+    "scripting",
+    "<all_urls>",
+    "storage"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "browser_action": {
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    },
+    "default_title": "Open LM Studio Window"
+  }
+}
