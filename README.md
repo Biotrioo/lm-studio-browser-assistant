@@ -93,9 +93,6 @@ If you make changes to the source code:
 
         For Firefox: Go to about:debugging#/runtime/this-firefox, find the extension, and click "Reload".
 
-Contributing
-
 Contributions are welcome! Please fork the repository and submit a pull request with your enhancements or bug fixes. For major changes, open an issue first to discuss what you would like to change.
-License
 
 This project is licensed under the MIT License.
