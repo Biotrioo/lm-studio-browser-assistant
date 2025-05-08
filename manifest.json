@@ -23,5 +23,10 @@
       "128": "icon.png"
     },
     "default_title": "Open LM Studio Window"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "lmstudio-assistant@localai"
+    }
   }
-}
+} 
