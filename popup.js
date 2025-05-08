@@ -564,5 +564,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Pre-fill input if opened from context menu (selection or image)
+  if (chrome && chrome.storage && chrome.storage.local) {
+    chrome.storage.local.get(["contextText", "contextImage"], (data) => {
+      if (data.contextText) {
+        input.value = data.contextText;
+        chrome.storage.local.remove("contextText");
+      }
+      if (data.contextImage) {
+        // Insert as markdown image link
+        input.value = `![Image from page](${data.contextImage})`;
+        chrome.storage.local.remove("contextImage");
+      }
+    });
+  }
+
   console.log("[DEBUG] All event handlers attached");
 });

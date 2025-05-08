@@ -28,5 +28,11 @@
     "gecko": {
       "id": "lmstudio-assistant@localai"
     }
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"]
+    }
+  ]
 } 
