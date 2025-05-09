@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
   clearBtn.addEventListener("click", () => {
     console.log("Clear button clicked");
     input.value = "";
-    output.innerHTML = "<i>Cleared.</i>";
+    output.innerHTML = DOMPurify.sanitize("<i>Cleared.</i>");
     output.classList.add("fade");
     setTimeout(() => output.classList.remove("fade"), 300);
   });
@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
       max_tokens: 1024
     };
 
-    output.innerHTML = "<i>Thinking...</i>";
+    output.innerHTML = DOMPurify.sanitize("<i>Thinking...</i>");
     fetch("http://localhost:1234/v1/chat/completions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
       output.scrollTop = output.scrollHeight;
     })
     .catch(err => {
-      output.innerHTML = "❌ Error: " + err.message;
+      output.innerHTML = DOMPurify.sanitize("❌ Error: " + DOMPurify.sanitize(err.message));
     });
   });
 
@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("New Chat button clicked");
     chatHistory = [];
     saveMemory();
-    output.innerHTML = "<i>🧠 New conversation started.</i>";
+    output.innerHTML = DOMPurify.sanitize("<i>🧠 New conversation started.</i>");
   });
 
   // Helper to detect Manifest V3
@@ -166,9 +166,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Only allow http(s) tabs
     const scriptableTabs = tabs.filter(tab => tab.url && tab.url.startsWith('http'));
     console.log('Scriptable tabs:', scriptableTabs.map(t => t.url));
-    output.innerHTML = `<i>Found ${tabs.length} tabs, ${scriptableTabs.length} scriptable (http/https) tabs.</i>`;
+    output.innerHTML = DOMPurify.sanitize(`<i>Found ${tabs.length} tabs, ${scriptableTabs.length} scriptable (http/https) tabs.</i>`);
     if (scriptableTabs.length === 0) {
-      output.innerHTML = '<i>No scriptable (http/https) tabs found. Please open at least one regular website tab.</i>';
+      output.innerHTML = DOMPurify.sanitize('<i>No scriptable (http/https) tabs found. Please open at least one regular website tab.</i>');
       console.warn('No scriptable (http/https) tabs found:', tabs.map(t => t.url));
       callback([]);
       return;
@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
         func
       }, (results) => {
         callbackFired = true;
-        output.innerHTML += `<br>MV3 callback fired. Results: ${JSON.stringify(results, null, 2)}`;
+        output.innerHTML += DOMPurify.sanitize(`<br>MV3 callback fired. Results: ${JSON.stringify(results, null, 2)}`);
         console.log('MV3 executeScript callback:', results);
         callback(results);
       });
@@ -203,11 +203,11 @@ document.addEventListener("DOMContentLoaded", () => {
             results[i] = result && result[0];
           }
           completed++;
-          output.innerHTML = `<i>Processed ${completed}/${total} tabs...</i>`;
+          output.innerHTML = DOMPurify.sanitize(`<i>Processed ${completed}/${total} tabs...</i>`);
           if (completed === total && !timeoutFired) {
             callbackFired = true;
             console.log('All tabs responded to executeScript.', results);
-            output.innerHTML += `<br>All tabs responded. Debug: ${JSON.stringify(results, null, 2)}`;
+            output.innerHTML += DOMPurify.sanitize(`<br>All tabs responded. Debug: ${JSON.stringify(results, null, 2)}`);
             callback(results.map((r, idx) => ({ tabId: scriptableTabs[idx].id, result: r })));
           }
         });
@@ -216,12 +216,12 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => {
         if (completed < total) {
           timeoutFired = true;
-          output.innerHTML = '<i>Timeout: Not all tabs responded to script injection.<br>Debug info: ' + JSON.stringify(results, null, 2) + '</i>';
+          output.innerHTML = DOMPurify.sanitize('<i>Timeout: Not all tabs responded to script injection.<br>Debug info: ' + JSON.stringify(results, null, 2) + '</i>');
           console.warn('Timeout: Not all tabs responded to executeScript', results);
           callback(results.map((r, idx) => ({ tabId: scriptableTabs[idx].id, result: r })));
         }
         if (!callbackFired) {
-          output.innerHTML += '<br><b>ERROR: Callback never fired!</b>';
+          output.innerHTML += DOMPurify.sanitize('<br><b>ERROR: Callback never fired!</b>');
           console.error('ERROR: Callback never fired!');
         }
       }, 2000); // 2 seconds for testing
@@ -254,7 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (chrome.runtime.lastError) {
           console.error('Error loading custom prompts:', chrome.runtime.lastError);
           const output = document.getElementById("output");
-          if (output) output.innerHTML = '<span style="color:orange">⚠️ Failed to load custom prompts: ' + chrome.runtime.lastError.message + '</span>';
+          if (output) output.innerHTML = DOMPurify.sanitize('<span style="color:orange">⚠️ Failed to load custom prompts: ' + DOMPurify.sanitize(chrome.runtime.lastError.message) + '</span>');
           cb([]);
         } else {
           console.log('[DEBUG] Loaded custom prompts:', result.customPrompts);
@@ -275,7 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (chrome.runtime.lastError) {
           console.error('Error saving custom prompts:', chrome.runtime.lastError);
           const output = document.getElementById("output");
-          if (output) output.innerHTML = '<span style="color:orange">⚠️ Failed to save custom prompts: ' + chrome.runtime.lastError.message + '</span>';
+          if (output) output.innerHTML = DOMPurify.sanitize('<span style="color:orange">⚠️ Failed to save custom prompts: ' + DOMPurify.sanitize(chrome.runtime.lastError.message) + '</span>');
         } else {
           console.log('[DEBUG] Saved custom prompts:', prompts);
         }
@@ -457,7 +457,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Spinner feedback
   function showSpinner() {
-    outputDiv.innerHTML = '<span class="spinner"></span>';
+    outputDiv.innerHTML = DOMPurify.sanitize('<span class="spinner"></span>');
   }
 
   // --- Ensure Summarize and Deep Research use spinner and correct prompt ---
@@ -467,7 +467,7 @@ document.addEventListener("DOMContentLoaded", () => {
     chrome.tabs.query({ lastFocusedWindow: true }, (tabs) => {
       const realTab = tabs.find(tab => tab.url && tab.url.startsWith('http'));
       if (!realTab) {
-        outputDiv.innerHTML = "❌ Could not find a valid website tab.";
+        outputDiv.innerHTML = DOMPurify.sanitize("❌ Could not find a valid website tab.");
         return;
       }
       executeScriptCompat([realTab], function() {
@@ -475,13 +475,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }, (results) => {
         const pageText = results?.[0]?.result || "❌ No readable text.";
         if (!pageText || pageText.length < 1) {
-          outputDiv.innerHTML = "<i>No readable text found on this page.<br>Debug info: " + JSON.stringify(results, null, 2) + "</i>";
+          outputDiv.innerHTML = DOMPurify.sanitize("<i>No readable text found on this page.<br>Debug info: " + JSON.stringify(results, null, 2) + "</i>");
           return;
         }
         getCurrentPromptTemplate((template) => {
           const summaryPrompt = `${template}\n\n${pageText}`;
           input.value = summaryPrompt;
-          outputDiv.innerHTML = '<span class="spinner"></span>';
+          outputDiv.innerHTML = DOMPurify.sanitize('<span class="spinner"></span>');
           document.getElementById("send").click();
         });
       });
@@ -531,13 +531,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }, (results) => {
         const validResults = (results || []).filter(r => r && r.result && r.result.text && r.result.text.length > 1);
         if (validResults.length === 0) {
-          outputDiv.innerHTML = "<i>No usable content found in open tabs.<br>Debug info: " + JSON.stringify(results, null, 2) + "</i>";
+          outputDiv.innerHTML = DOMPurify.sanitize("<i>No usable content found in open tabs.<br>Debug info: " + JSON.stringify(results, null, 2) + "</i>");
           return;
         }
         let context = validResults.map(r => `# ${r.result.title}\nURL: ${r.result.url}\n${r.result.text}`).join("\n\n---\n\n");
         getCurrentPromptTemplate((template) => {
           const prompt = `${template}\n\n${context}`;
-          outputDiv.innerHTML = '<span class="spinner"></span>';
+          outputDiv.innerHTML = DOMPurify.sanitize('<span class="spinner"></span>');
           fetch("http://localhost:1234/v1/chat/completions", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -557,7 +557,7 @@ document.addEventListener("DOMContentLoaded", () => {
             outputDiv.scrollTop = outputDiv.scrollHeight;
           })
           .catch(err => {
-            outputDiv.innerHTML = "❌ Error: " + err.message;
+            outputDiv.innerHTML = DOMPurify.sanitize("❌ Error: " + DOMPurify.sanitize(err.message));
           });
         });
       });
